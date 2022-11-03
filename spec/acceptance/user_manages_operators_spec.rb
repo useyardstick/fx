@@ -17,5 +17,7 @@ describe "User manages operators" do
 
     result = execute("SELECT box '((0, 0), (3, 3))' &~& box '((1, 1), (2, 2))' AS result")
     expect(result).to eq("result" => false)
+
+    successfully "rake db:rollback"
   end
 end

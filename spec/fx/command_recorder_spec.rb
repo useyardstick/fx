@@ -168,4 +168,22 @@ describe Fx::CommandRecorder, :db do
         to raise_error(ActiveRecord::IrreversibleMigration)
     end
   end
+
+  describe "#create_operator" do
+    it "records the created operator" do
+      recorder = ActiveRecord::Migration::CommandRecorder.new
+
+      recorder.create_operator "&~&", "box", "box", function: "partially_overlaps"
+
+      expect(recorder.commands).to eq [[:create_operator, ["&~&", "box", "box", {function: "partially_overlaps"}], nil]]
+    end
+
+    it "reverts to drop_operator" do
+      recorder = ActiveRecord::Migration::CommandRecorder.new
+
+      recorder.revert { recorder.create_operator "&~&", "box", "box", function: "partially_overlaps" }
+
+      expect(recorder.commands).to eq [[:drop_operator, ["&~&", "box", "box"]]]
+    end
+  end
 end
