@@ -15,7 +15,8 @@ module Fx
             CREATE OPERATOR &~& (
               LEFTARG = box,
               RIGHTARG = box,
-              FUNCTION = partially_overlaps
+              FUNCTION = partially_overlaps,
+              COMMUTATOR = &~&
             );
           EOS
 
@@ -27,6 +28,7 @@ module Fx
           expect(first.leftarg).to eq "box"
           expect(first.rightarg).to eq "box"
           expect(first.function).to eq "partially_overlaps"
+          expect(first.commutator).to eq "&~&"
         end
       end
     end

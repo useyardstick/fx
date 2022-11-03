@@ -61,7 +61,7 @@ module Fx::Adapters
             IMMUTABLE
             RETURN a && b AND NOT a <@ b AND NOT a @> b;
         EOS
-        adapter.create_operator("&~&", "box", "box", "partially_overlaps")
+        adapter.create_operator("&~&", "box", "box", function: "partially_overlaps")
 
         expect(adapter.operators.map(&:name)).to include("&~&")
       end
@@ -118,7 +118,7 @@ module Fx::Adapters
             IMMUTABLE
             RETURN a && b AND NOT a <@ b AND NOT a @> b;
         EOS
-        adapter.create_operator("&~&", "box", "box", "partially_overlaps")
+        adapter.create_operator("&~&", "box", "box", function: "partially_overlaps")
 
         adapter.drop_operator("&~&", "box", "box")
 
@@ -184,7 +184,7 @@ module Fx::Adapters
             IMMUTABLE
             RETURN a && b AND NOT a <@ b AND NOT a @> b;
         EOS
-        adapter.create_operator("&~&", "box", "box", "partially_overlaps")
+        adapter.create_operator("&~&", "box", "box", function: "partially_overlaps")
 
         expect(adapter.operators.map(&:name)).to eq ["&~&"]
       end

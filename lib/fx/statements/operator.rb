@@ -15,9 +15,9 @@ module Fx
       # @example Create operator
       #   create_operator("&&&&", :geometry, :geometry, function: "ST_Overlaps")
       #
-      def create_operator(name, *args, function:)
+      def create_operator(name, *args, **options)
         leftarg, rightarg = operand_types(args)
-        Fx.database.create_operator(name, leftarg, rightarg, function)
+        Fx.database.create_operator(name, leftarg, rightarg, options)
       end
 
       # Drop a database operator by name and operand types.

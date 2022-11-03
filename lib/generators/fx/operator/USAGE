@@ -4,6 +4,6 @@ Description:
 
 Examples:
 
-    rails generate fx:operator '&~&' box box --function partially_overlaps
+    rails generate fx:operator '&~&' box box --function partially_overlaps --commutator '&~&'
 
       create: db/migrate/[TIMESTAMP]_create_operator_partially_overlaps.rb

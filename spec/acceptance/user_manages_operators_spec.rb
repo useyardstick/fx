@@ -9,7 +9,7 @@ describe "User manages operators" do
         IMMUTABLE
         RETURN a && b AND NOT a <@ b AND NOT a @> b;
     EOS
-    successfully "rails generate fx:operator '&~&' 'box' 'box' --function partially_overlaps"
+    successfully "rails generate fx:operator '&~&' 'box' 'box' --function partially_overlaps --commutator '&~&'"
     successfully "rake db:migrate"
 
     result = execute("SELECT box '((0, 0), (3, 3))' &~& box '((2, 2), (4, 4))' AS result")

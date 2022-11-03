@@ -9,7 +9,7 @@ describe Fx::Statements::Operator, :db do
       connection.create_operator("&~&", "box", "box", function: "partially_overlaps")
 
       expect(database).to have_received(:create_operator).
-        with("&~&", "box", "box", "partially_overlaps")
+        with("&~&", "box", "box", function: "partially_overlaps")
     end
 
     it "creates a unary operator" do
@@ -18,7 +18,7 @@ describe Fx::Statements::Operator, :db do
       connection.create_operator("&~", "box", function: "tiny_box")
 
       expect(database).to have_received(:create_operator).
-        with("&~", nil, "box", "tiny_box")
+        with("&~", nil, "box", function: "tiny_box")
     end
   end
 

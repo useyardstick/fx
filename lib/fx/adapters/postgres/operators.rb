@@ -10,10 +10,16 @@ module Fx
         # dumpable into `db/schema.rb`.
         OPERATORS_QUERY = <<-EOS.freeze
           SELECT
-            oprname AS name,
+            pg_operator.oprname AS name,
             leftarg.typname AS leftarg,
             rightarg.typname AS rightarg,
-            oprcode AS function
+            pg_operator.oprcode AS function,
+            commutator.oprname AS commutator,
+            negator.oprname AS negator,
+            pg_operator.oprrest AS restrict,
+            pg_operator.oprjoin AS join,
+            pg_operator.oprcanhash AS hashes,
+            pg_operator.oprcanmerge AS merges
           FROM pg_operator
           LEFT JOIN pg_type AS leftarg
             ON pg_operator.oprleft = leftarg.oid
@@ -23,6 +29,10 @@ module Fx
             ON pg_operator.oprnamespace = pg_namespace.oid
           LEFT JOIN pg_depend
             ON pg_operator.oid = pg_depend.objid AND pg_depend.deptype = 'e'
+          LEFT JOIN pg_operator AS commutator
+            ON pg_operator.oprcom = commutator.oid
+          LEFT JOIN pg_operator AS negator
+            ON pg_operator.oprnegate = negator.oid
           WHERE pg_namespace.nspname = 'public' AND pg_depend.objid IS NULL
         EOS
 

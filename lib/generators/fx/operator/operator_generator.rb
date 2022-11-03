@@ -11,6 +11,12 @@ module Fx
       argument :firstarg, type: :string, required: true
       argument :secondarg, type: :string, required: false
       class_option :function, type: :string, required: true
+      class_option :commutator, type: :string, required: false
+      class_option :negator, type: :string, required: false
+      class_option :restrict, type: :string, required: false
+      class_option :join, type: :string, required: false
+      class_option :hashes, type: :boolean, required: false
+      class_option :merges, type: :boolean, required: false
 
       def create_migration_file
         migration_template(

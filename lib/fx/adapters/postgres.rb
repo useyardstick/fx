@@ -101,14 +101,13 @@ module Fx
       # {Fx::Statements::Operator#create_operator}.
       #
       # @return [void]
-      def create_operator(name, leftarg, rightarg, function)
-        execute <<~SQL
-          CREATE OPERATOR #{name} (
-            LEFTARG = #{leftarg || "NONE"},
-            RIGHTARG = #{rightarg},
-            FUNCTION = #{function}
-          )
-        SQL
+      def create_operator(name, leftarg, rightarg, options = {})
+        definition = {
+          "LEFTARG" => leftarg || "NONE",
+          "RIGHTARG" => rightarg
+        }.merge(options)
+        definition_sql = definition.map { |key, value| "#{key} = #{value}" }.join(", ")
+        execute "CREATE OPERATOR #{name} (#{definition_sql})"
       end
 
       # Updates a function in the database.
