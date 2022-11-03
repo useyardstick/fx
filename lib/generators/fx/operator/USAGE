@@ -1,0 +1,9 @@
+Description:
+  Create a new database operator for your application. This will create a new
+  migration file.
+
+Examples:
+
+    rails generate fx:operator '&~&' box box --function partially_overlaps
+
+      create: db/migrate/[TIMESTAMP]_create_operator_partially_overlaps.rb

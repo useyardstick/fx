@@ -1,6 +1,7 @@
 require "fx/adapters/postgres/connection"
 require "fx/adapters/postgres/functions"
 require "fx/adapters/postgres/triggers"
+require "fx/adapters/postgres/operators"
 
 module Fx
   # F(x) database adapters.
@@ -60,6 +61,16 @@ module Fx
         Triggers.all(connection)
       end
 
+      # Returns an array of operators in the database.
+      #
+      # This collection of operators is used by the [Fx::SchemaDumper] to
+      # populate the `schema.rb` file.
+      #
+      # @return [Array<Fx::Trigger>]
+      def operators
+        Operators.all(connection)
+      end
+
       # Creates a function in the database.
       #
       # This is typically called in a migration via
@@ -82,6 +93,22 @@ module Fx
       # @return [void]
       def create_trigger(sql_definition)
         execute sql_definition
+      end
+
+      # Creates an operator in the database.
+      #
+      # This is typically called in a migration via
+      # {Fx::Statements::Operator#create_operator}.
+      #
+      # @return [void]
+      def create_operator(name, leftarg, rightarg, function)
+        execute <<~SQL
+          CREATE OPERATOR #{name} (
+            LEFTARG = #{leftarg || "NONE"},
+            RIGHTARG = #{rightarg},
+            FUNCTION = #{function}
+          )
+        SQL
       end
 
       # Updates a function in the database.
@@ -143,6 +170,20 @@ module Fx
       # @return [void]
       def drop_trigger(name, on:)
         execute "DROP TRIGGER #{name} ON #{on};"
+      end
+
+      # Drops the operator from the database
+      #
+      # This is typically called in a migration via
+      # {Fx::Statements::Operator#drop_operator}.
+      #
+      # @param name The name of the operator to drop
+      # @param leftarg The type of the left operand
+      # @param rightarg The type of the right operand
+      #
+      # @return [void]
+      def drop_operator(name, leftarg, rightarg)
+        execute "DROP OPERATOR #{name} (#{leftarg || 'NONE'}, #{rightarg});"
       end
 
       private

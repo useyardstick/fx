@@ -52,6 +52,21 @@ module Fx::Adapters
       end
     end
 
+    describe "#create_operator" do
+      it "successfully creates an operator" do
+        adapter = Postgres.new
+        adapter.create_function <<-EOS
+          CREATE OR REPLACE FUNCTION partially_overlaps(a box,  b box) RETURNS boolean
+            LANGUAGE SQL
+            IMMUTABLE
+            RETURN a && b AND NOT a <@ b AND NOT a @> b;
+        EOS
+        adapter.create_operator("&~&", "box", "box", "partially_overlaps")
+
+        expect(adapter.operators.map(&:name)).to include("&~&")
+      end
+    end
+
     describe "#drop_function" do
       context "when the function has arguments" do
         it "successfully drops a function with the entire function signature" do
@@ -91,6 +106,23 @@ module Fx::Adapters
 
           expect(adapter.functions.map(&:name)).not_to include("test")
         end
+      end
+    end
+
+    describe "#drop_operator" do
+      it "successfully drops an operator" do
+        adapter = Postgres.new
+        adapter.create_function <<-EOS
+          CREATE OR REPLACE FUNCTION partially_overlaps(a box,  b box) RETURNS boolean
+            LANGUAGE SQL
+            IMMUTABLE
+            RETURN a && b AND NOT a <@ b AND NOT a @> b;
+        EOS
+        adapter.create_operator("&~&", "box", "box", "partially_overlaps")
+
+        adapter.drop_operator("&~&", "box", "box")
+
+        expect(adapter.operators.map(&:name)).not_to include("&~&")
       end
     end
 
@@ -140,6 +172,21 @@ module Fx::Adapters
         adapter.create_trigger(sql_definition)
 
         expect(adapter.triggers.map(&:name)).to eq ["uppercase_users_name"]
+      end
+    end
+
+    describe "#operators" do
+      it "finds operators and builds Fx::Operator objects" do
+        adapter = Postgres.new
+        adapter.create_function <<-EOS
+          CREATE OR REPLACE FUNCTION partially_overlaps(a box,  b box) RETURNS boolean
+            LANGUAGE SQL
+            IMMUTABLE
+            RETURN a && b AND NOT a <@ b AND NOT a @> b;
+        EOS
+        adapter.create_operator("&~&", "box", "box", "partially_overlaps")
+
+        expect(adapter.operators.map(&:name)).to eq ["&~&"]
       end
     end
   end

@@ -1,0 +1,5 @@
+class <%= migration_class_name %> < <%= activerecord_migration_class %>
+  def change
+    create_operator "<%= name %>", <%= formatted_args %>, function: "<%= function_name %>"
+  end
+end

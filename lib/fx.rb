@@ -8,6 +8,7 @@ require "fx/statements"
 require "fx/schema_dumper"
 require "fx/trigger"
 require "fx/railtie"
+require "fx/operator"
 
 # F(x) adds methods `ActiveRecord::Migration` to create and manage database
 # triggers and functions in Rails applications.
